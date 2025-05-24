@@ -1,0 +1,42 @@
+package com.restaurant.restaurant_management.model;
+
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.List;
+
+/**
+ * Represents a Restaurant entity.
+ * Contains basic info like name, address, description,
+ * and list of menu items offered by the restaurant.
+ */
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Entity
+@Table(name = "restaurants")
+public class Restaurant {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false, length = 100)
+    private String name;
+
+    @Column(length = 255)
+    private String address;
+
+    @Column(length = 500)
+    private String description;
+
+    /**
+     * One restaurant can have many menu items.
+     * Cascade all operations and fetch lazily to improve performance.
+     */
+    @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<MenuItem> menuItems;
+
+}
