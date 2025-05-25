@@ -20,8 +20,8 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(auth ->
                         auth.requestMatchers("/api/auth/register").permitAll()
                                 .anyRequest().authenticated()
-                )
-                .httpBasic(Customizer.withDefaults());
+                );
+//                .httpBasic(Customizer.withDefaults());
 
         return http.build();
     }
