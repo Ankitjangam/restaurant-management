@@ -2,6 +2,7 @@ package com.restaurant.restaurant_management.service;
 
 import com.restaurant.restaurant_management.dto.UserRegistrationDto;
 import com.restaurant.restaurant_management.model.Role;
+import com.restaurant.restaurant_management.model.RoleType;
 import com.restaurant.restaurant_management.model.User;
 import com.restaurant.restaurant_management.repository.RoleRepository;
 import com.restaurant.restaurant_management.repository.UserRepository;
@@ -9,7 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Service
 public class UserService {
@@ -29,9 +32,24 @@ public class UserService {
         user.setEmail(registrationDto.getEmail());
         user.setPassword(passwordEncoder.encode(registrationDto.getPassword()));
 
-        Role defaultRole = roleRepository.findByName("CUSTOMER");
+        Set<Role> assignedRoles = new HashSet<>();
 
-        user.setRoles(Collections.singleton(defaultRole));
+        if (registrationDto.getEmail().endsWith("@admin.com")) {
+            Role adminRole = roleRepository.findByName(RoleType.ADMIN)
+                    .orElseThrow(() -> new RuntimeException("ADMIN role not found"));
+            assignedRoles.add(adminRole);
+        } else if (registrationDto.getEmail().endsWith("@staff.com")) {
+            Role staffRole = roleRepository.findByName(RoleType.STAFF)
+                    .orElseThrow(() -> new RuntimeException("STAFF role not found"));
+            assignedRoles.add(staffRole);
+        } else {
+            Role customerRole = roleRepository.findByName(RoleType.CUSTOMER)
+                    .orElseThrow(() -> new RuntimeException("CUSTOMER role not found"));
+            assignedRoles.add(customerRole);
+        }
+
+        user.setRoles(assignedRoles);
+
         userRepository.save(user);
     }
 }
