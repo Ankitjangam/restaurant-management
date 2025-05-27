@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 public class JwtUtil {
 
     // Secret key (at least 256 bits for HS256)
-    private final Key secretKey = Keys.hmacShaKeyFor("YourSuperSecretKeyForJwtTokenMustBeLongEnough123!".getBytes());
+    private final Key secretKey = Keys.hmacShaKeyFor("AnkitGetNewKeyjangamankitjangamankit".getBytes());
 
     private final long jwtExpirationMs = 1000 * 60 * 60 * 10; // 10 hours
 
