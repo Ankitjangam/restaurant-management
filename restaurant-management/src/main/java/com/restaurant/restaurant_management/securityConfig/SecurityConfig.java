@@ -23,12 +23,13 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
-                      .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**").permitAll()
-                        .anyRequest().authenticated()
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/api/auth/**").permitAll() // Public (register/login)
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN") // Only ADMIN
+                        .requestMatchers("/api/staff/**").hasAnyRole("STAFF", "ADMIN") // STAFF or ADMIN
+                        .requestMatchers("/api/customer/**").hasAnyRole("CUSTOMER", "STAFF", "ADMIN") // All roles
+                        .anyRequest().authenticated() // Secure everything else
                 )
-
-                // Add JWT filter before Spring Security's UsernamePasswordAuthenticationFilter
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
@@ -42,7 +43,6 @@ public class SecurityConfig {
         return provider;
     }
 
-    // Expose AuthenticationManager to be used in other beans (e.g., filters)
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
