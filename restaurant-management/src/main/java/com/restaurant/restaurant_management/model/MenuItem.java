@@ -4,10 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * Represents an individual menu item.
- * Linked to a restaurant (many items per restaurant).
- */
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -32,11 +29,6 @@ public class MenuItem {
     @JoinColumn(name = "category_id")
     private Category category;
 
-
-    /**
-     * Many menu items belong to one restaurant.
-     * Use LAZY fetch to avoid unnecessary data loading.
-     */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_id", nullable = false)
     private Restaurant restaurant;

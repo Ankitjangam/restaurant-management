@@ -35,15 +35,15 @@ public class UserService {
         Set<Role> assignedRoles = new HashSet<>();
 
         if (registrationDto.getEmail().endsWith("@admin.com")) {
-            Role adminRole = roleRepository.findByName(RoleType.ADMIN)
+            Role adminRole = roleRepository.findByName(RoleType.ROLE_ADMIN)
                     .orElseThrow(() -> new RuntimeException("ADMIN role not found"));
             assignedRoles.add(adminRole);
         } else if (registrationDto.getEmail().endsWith("@staff.com")) {
-            Role staffRole = roleRepository.findByName(RoleType.STAFF)
+            Role staffRole = roleRepository.findByName(RoleType.ROLE_STAFF)
                     .orElseThrow(() -> new RuntimeException("STAFF role not found"));
             assignedRoles.add(staffRole);
         } else {
-            Role customerRole = roleRepository.findByName(RoleType.CUSTOMER)
+            Role customerRole = roleRepository.findByName(RoleType.ROLE_CUSTOMER)
                     .orElseThrow(() -> new RuntimeException("CUSTOMER role not found"));
             assignedRoles.add(customerRole);
         }
