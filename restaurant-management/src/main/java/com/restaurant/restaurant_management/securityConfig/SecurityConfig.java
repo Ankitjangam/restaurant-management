@@ -8,6 +8,7 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -16,6 +17,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @RequiredArgsConstructor
+@EnableWebSecurity
 public class SecurityConfig {
 
     private final CustomUserDetailsService userDetailsService;
@@ -30,35 +32,47 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/**").permitAll()
 
                         // Admin only
-                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/api/admin/**").hasAuthority("ROLE_ADMIN")
 
                         // Staff & Admin
-                        .requestMatchers("/api/staff/**").hasAnyRole("STAFF", "ADMIN")
+                        .requestMatchers("/api/staff/**").hasAnyAuthority("ROLE_STAFF", "ROLE_ADMIN")
 
                         // Customer, Staff, Admin
-                        .requestMatchers("/api/customer/**").hasAnyRole("CUSTOMER", "STAFF", "ADMIN")
+                        .requestMatchers("/api/customer/**").hasAnyAuthority("ROLE_CUSTOMER", "ROLE_STAFF", "ROLE_ADMIN")
 
                         // Menu items CRUD
                         .requestMatchers(HttpMethod.GET, "/api/menu-items/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/menu-items/**").hasAnyRole("ADMIN", "MANAGER")
-                        .requestMatchers(HttpMethod.PUT, "/api/menu-items/**").hasAnyRole("ADMIN", "MANAGER")
-                        .requestMatchers(HttpMethod.DELETE, "/api/menu-items/**").hasAnyRole("ADMIN", "MANAGER")
+                        .requestMatchers(HttpMethod.POST, "/api/menu-items/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_MANAGER")
+                        .requestMatchers(HttpMethod.PUT, "/api/menu-items/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_MANAGER")
+                        .requestMatchers(HttpMethod.DELETE, "/api/menu-items/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_MANAGER")
 
-                        // Orders: Customers can create, staff/admin manage orders
-                        .requestMatchers(HttpMethod.POST, "/api/orders/**").hasRole("CUSTOMER")
-                        .requestMatchers(HttpMethod.GET, "/api/orders/**").hasAnyRole("STAFF", "ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/api/orders/**").hasAnyRole("STAFF", "ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/api/orders/**").hasAnyRole("STAFF", "ADMIN")
+                        // Tables management
+                        .requestMatchers(HttpMethod.POST, "/api/tables/**").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/tables/**").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/tables/**").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/tables/**").hasAuthority("ROLE_ADMIN")
+
+                        // Bookings
+                        .requestMatchers(HttpMethod.GET, "/api/bookings").hasAnyAuthority("ROLE_CUSTOMER", "ROLE_ADMIN", "ROLE_STAFF")
+                        .requestMatchers(HttpMethod.DELETE, "/api/bookings/**").hasAnyAuthority("ROLE_CUSTOMER", "ROLE_ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/bookings").hasAnyAuthority("ROLE_CUSTOMER", "ROLE_ADMIN")
+
+                        // Orders
+                        .requestMatchers(HttpMethod.POST, "/api/orders/**").hasAuthority("ROLE_CUSTOMER")
+                        .requestMatchers(HttpMethod.GET, "/api/orders/**").hasAnyAuthority("ROLE_STAFF", "ROLE_ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/orders/**").hasAnyAuthority("ROLE_STAFF", "ROLE_ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/orders/**").hasAnyAuthority("ROLE_STAFF", "ROLE_ADMIN")
 
                         // Categories management
-                        .requestMatchers("/api/categories/**").hasAnyRole("ADMIN", "MANAGER")
+                        .requestMatchers("/api/categories/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_MANAGER")
 
                         // Reports only admin
-                        .requestMatchers("/api/reports/**").hasRole("ADMIN")
+                        .requestMatchers("/api/reports/**").hasAuthority("ROLE_ADMIN")
 
-                        // Any other request requires auth
+                        // Any other request requires authentication
                         .anyRequest().authenticated()
                 )
+
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 

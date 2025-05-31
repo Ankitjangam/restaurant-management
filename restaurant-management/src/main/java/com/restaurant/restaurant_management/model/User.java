@@ -6,12 +6,9 @@ import lombok.*;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * Entity representing application users.
- */
+
 @Entity
 @Table(name = "users", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"username"}),
         @UniqueConstraint(columnNames = {"email"})
 })
 @Data

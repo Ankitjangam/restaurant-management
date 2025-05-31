@@ -1,6 +1,5 @@
 package com.restaurant.restaurant_management.service;
 
-
 import com.restaurant.restaurant_management.model.Role;
 import com.restaurant.restaurant_management.model.User;
 import org.springframework.security.core.GrantedAuthority;

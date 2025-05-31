@@ -7,9 +7,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.List;
 
-/**
- * Represents a customer order in the system.
- */
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -30,9 +28,7 @@ public class Order {
     @Column(nullable = false)
     private Double totalAmount;
 
-    /**
-     * One order contains multiple order items.
-     */
+
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<OrderItem> orderItems;
 

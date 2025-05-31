@@ -7,11 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
-/**
- * Represents a Restaurant entity.
- * Contains basic info like name, address, description,
- * and list of menu items offered by the restaurant.
- */
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -32,10 +28,6 @@ public class Restaurant {
     @Column(length = 500)
     private String description;
 
-    /**
-     * One restaurant can have many menu items.
-     * Cascade all operations and fetch lazily to improve performance.
-     */
     @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<MenuItem> menuItems;
 

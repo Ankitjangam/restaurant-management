@@ -1,12 +1,8 @@
 package com.restaurant.restaurant_management.model;
 
 
-
-/**
- * Enum for defining user roles.
- */
 public enum RoleType {
-    ADMIN,
-    STAFF,
-    CUSTOMER
+    ROLE_ADMIN,
+    ROLE_STAFF,
+    ROLE_CUSTOMER
 }

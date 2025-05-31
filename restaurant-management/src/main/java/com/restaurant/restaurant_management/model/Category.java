@@ -4,13 +4,8 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import java.util.List;
 
-/**
- * Represents a category for menu items,
- * e.g., Beverages, Starters, Main Course.
- */
 
 @Data
 @AllArgsConstructor
@@ -29,9 +24,7 @@ public class Category {
     @Column(length = 255)
     private String description;
 
-    /**
-     * One category can have multiple menu items.
-     */
+
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<MenuItem> menuItems;
 

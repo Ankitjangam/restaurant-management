@@ -2,7 +2,6 @@ package com.restaurant.restaurant_management.controller;
 
 import com.restaurant.restaurant_management.dto.MenuItemRequestDTO;
 import com.restaurant.restaurant_management.dto.MenuItemResponseDTO;
-import com.restaurant.restaurant_management.exception.ResourceNotFoundException;
 import com.restaurant.restaurant_management.service.MenuItemService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
