@@ -1,6 +1,7 @@
 package com.restaurant.restaurant_management.repository;
 
 import com.restaurant.restaurant_management.model.Booking;
+import com.restaurant.restaurant_management.model.BookingStatus;
 import com.restaurant.restaurant_management.model.RestaurantTable;
 import com.restaurant.restaurant_management.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -20,4 +21,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     List<Booking> findByUser(User user);
 
     List<Booking> findByTableId(Long tableId);
+    List<Booking> findByStatus(BookingStatus status);
+    List<Booking> findByUserId(Long userId);
+
 }
