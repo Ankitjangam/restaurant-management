@@ -79,12 +79,14 @@ public class BookingServiceImpl implements BookingService {
     }
 
     private BookingResponseDTO mapToDTO(Booking booking) {
-        BookingResponseDTO dto = new BookingResponseDTO();
-        dto.setId(booking.getId());
-        dto.setUserId(booking.getUser().getId());
-        dto.setStartTime(booking.getStartTime());
-        dto.setEndTime(booking.getEndTime());
-        dto.setStatus(booking.getStatus());
-        return dto;
+        return BookingResponseDTO.builder()
+                .id(booking.getId())
+                .userId(booking.getUser().getId())
+                .tableId(booking.getTable().getId()) // ADD THIS
+                .startTime(booking.getStartTime())
+                .endTime(booking.getEndTime())
+                .status(booking.getStatus())
+                .build();
     }
+
 }
