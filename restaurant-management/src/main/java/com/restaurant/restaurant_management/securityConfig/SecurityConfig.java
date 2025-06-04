@@ -60,12 +60,20 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, "/api/bookings/**").hasAnyAuthority("ROLE_CUSTOMER", "ROLE_ADMIN")
 
                         // Orders
-                        .requestMatchers(HttpMethod.POST, "/api/orders/**").hasAuthority("ROLE_CUSTOMER")
-                        .requestMatchers(HttpMethod.GET, "/api/orders/**").hasAnyAuthority("ROLE_STAFF", "ROLE_ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/api/orders/**").hasAnyAuthority("ROLE_STAFF", "ROLE_ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/api/orders/**").hasAnyAuthority("ROLE_STAFF", "ROLE_ADMIN")
+                                // Orders
+                                .requestMatchers(HttpMethod.POST, "/api/orders/place").hasAuthority("ROLE_CUSTOMER")
+                                .requestMatchers(HttpMethod.GET, "/api/orders/my").hasAuthority("ROLE_CUSTOMER")
+                                .requestMatchers(HttpMethod.PUT, "/api/orders/*/cancel").hasAuthority("ROLE_CUSTOMER")
 
-                        // Categories management
+                                .requestMatchers(HttpMethod.GET, "/api/orders").hasAnyAuthority("ROLE_ADMIN", "ROLE_STAFF")
+                                .requestMatchers(HttpMethod.PUT, "/api/orders/*/status").hasAnyAuthority("ROLE_ADMIN", "ROLE_STAFF")
+
+
+// Optional: allow DELETE for admin/staff
+                                .requestMatchers(HttpMethod.DELETE, "/api/orders/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_STAFF")
+
+
+//                        Categories management
                         .requestMatchers("/api/categories/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_MANAGER")
 
                         // Reports only admin

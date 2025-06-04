@@ -1,4 +1,11 @@
 package com.restaurant.restaurant_management.model;
 
-public class OrderStatus {
+
+public enum OrderStatus {
+    PENDING,
+    CONFIRMED,
+    PREPARING,
+    COMPLETED,
+    CANCELLED
 }
+
