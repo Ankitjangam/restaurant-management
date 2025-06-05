@@ -3,15 +3,15 @@ package com.restaurant.restaurant_management.service;
 import com.restaurant.restaurant_management.dto.OrderResponse;
 import com.restaurant.restaurant_management.dto.PlaceOrderRequest;
 import com.restaurant.restaurant_management.model.*;
-import com.restaurant.restaurant_management.repository.MenuItemRepository;
-import com.restaurant.restaurant_management.repository.OrderRepository;
-import com.restaurant.restaurant_management.repository.UserRepository;
+import com.restaurant.restaurant_management.repository.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,6 +22,7 @@ public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final UserRepository userRepository;
     private final MenuItemRepository menuItemRepository;
+    private final InventoryRepository inventoryRepository;
 
     @Override
     @Transactional
@@ -38,6 +39,17 @@ public class OrderServiceImpl implements OrderService {
             MenuItem menuItem = menuItemRepository.findById(itemDTO.getMenuItemId())
                     .orElseThrow(() -> new RuntimeException("Menu item not found"));
 
+            // Deduct inventory
+            Inventory inventory = inventoryRepository.findByItemName(menuItem.getName())
+                    .orElseThrow(() -> new RuntimeException("Inventory not found for item: " + menuItem.getName()));
+
+            if (inventory.getQuantity() < itemDTO.getQuantity()) {
+                throw new RuntimeException("Insufficient inventory for item: " + menuItem.getName());
+            }
+
+            inventory.setQuantity(inventory.getQuantity() - itemDTO.getQuantity());
+            inventoryRepository.save(inventory);
+
             OrderItem item = new OrderItem();
             item.setMenuItem(menuItem);
             item.setQuantity(itemDTO.getQuantity());
@@ -52,7 +64,6 @@ public class OrderServiceImpl implements OrderService {
 
         return orderRepository.save(order);
     }
-
 
     @Override
     public OrderResponse getOrderById(Long orderId) {
@@ -104,8 +115,59 @@ public class OrderServiceImpl implements OrderService {
     }
 
 
+    @Override
+    public List<OrderResponse> filterOrders(Long userId, String username, LocalDate startDate, LocalDate endDate, String status) {
+        User user = null;
+        if (userId != null) {
+            user = userRepository.findById(userId).orElse(null);
+        } else if (username != null) {
+            user = userRepository.findByUsername(username).orElse(null);
+        }
+
+        OrderStatus orderStatus = null;
+        if (status != null && !status.isEmpty()) {
+            try {
+                orderStatus = OrderStatus.valueOf(status.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                throw new RuntimeException("Invalid order status: " + status);
+            }
+        }
+
+        LocalDateTime startDateTime = startDate != null ? startDate.atStartOfDay() : null;
+        LocalDateTime endDateTime = endDate != null ? endDate.atTime(LocalTime.MAX) : null;
+
+        List<Order> filteredOrders = orderRepository.filterOrders(user, orderStatus, startDateTime, endDateTime);
+
+        return filteredOrders.stream()
+                .map(this::toResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<OrderResponse> getFilteredOrders(String username, String status, String startDate, String endDate) {
+        // Parse dates
+        LocalDateTime start = startDate != null ? LocalDateTime.parse(startDate) : LocalDateTime.MIN;
+        LocalDateTime end = endDate != null ? LocalDateTime.parse(endDate) : LocalDateTime.MAX;
+
+        List<Order> orders;
+
+        if (username != null && status != null) {
+            OrderStatus orderStatus = OrderStatus.valueOf(status.toUpperCase());
+            orders = orderRepository.findByUserUsernameAndStatusAndOrderDateBetween(username, orderStatus, start, end);
+        } else if (username != null) {
+            orders = orderRepository.findByUserUsernameAndOrderDateBetween(username, start, end);
+        } else if (status != null) {
+            OrderStatus orderStatus = OrderStatus.valueOf(status.toUpperCase());
+            orders = orderRepository.findByStatusAndOrderDateBetween(orderStatus, start, end);
+        } else {
+            orders = orderRepository.findByOrderDateBetween(start, end);
+        }
+
+        return orders.stream().map(this::toResponse).collect(Collectors.toList());
+    }
+
+
     private OrderResponse toResponse(Order order) {
         return new OrderResponse(order.getId(), order.getOrderDate(), order.getStatus().name(), order.getTotalAmount());
     }
 }
-

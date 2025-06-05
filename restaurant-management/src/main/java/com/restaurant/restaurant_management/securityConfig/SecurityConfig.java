@@ -69,10 +69,20 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.PUT, "/api/orders/*/status").hasAnyAuthority("ROLE_ADMIN", "ROLE_STAFF")
 
 
+
+
+
 // Optional: allow DELETE for admin/staff
                                 .requestMatchers(HttpMethod.DELETE, "/api/orders/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_STAFF")
 
+                        //billing
+                                .requestMatchers(HttpMethod.POST, "/api/billing/**").hasAnyAuthority("ROLE_STAFF", "ROLE_ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/api/billing/**").hasAnyAuthority("ROLE_STAFF", "ROLE_ADMIN", "ROLE_CUSTOMER")
 
+
+                                .requestMatchers("/api/inventory/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_STAFF")
+
+                                .requestMatchers("/api/orders/filter").hasAuthority("ROLE_ADMIN")
 //                        Categories management
                         .requestMatchers("/api/categories/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_MANAGER")
 

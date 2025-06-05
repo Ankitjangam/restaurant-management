@@ -5,10 +5,12 @@ import com.restaurant.restaurant_management.dto.PlaceOrderRequest;
 import com.restaurant.restaurant_management.model.Order;
 import com.restaurant.restaurant_management.service.OrderService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -56,5 +58,28 @@ public class OrderController {
         String username = authentication.getName();
         orderService.cancelOrder(orderId, username);
         return ResponseEntity.ok("Order cancelled successfully");
+    }
+
+
+    @GetMapping("/filter")
+    public ResponseEntity<List<OrderResponse>> filterOrders(
+            @RequestParam(required = false) Long userId,
+            @RequestParam(required = false) String username,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+            @RequestParam(required = false) String status) {
+
+        List<OrderResponse> filteredOrders = orderService.filterOrders(userId, username, startDate, endDate, status);
+        return ResponseEntity.ok(filteredOrders);
+    }
+
+    @GetMapping("/admin/orders")
+    public ResponseEntity<List<OrderResponse>> getOrdersForAdmin(
+            @RequestParam(required = false) String username,
+            @RequestParam(required = false) String status,
+            @RequestParam(required = false) String startDate,
+            @RequestParam(required = false) String endDate) {
+        List<OrderResponse> orders = orderService.getFilteredOrders(username, status, startDate, endDate);
+        return ResponseEntity.ok(orders);
     }
 }
