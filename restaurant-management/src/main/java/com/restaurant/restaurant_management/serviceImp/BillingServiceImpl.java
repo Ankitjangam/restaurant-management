@@ -6,10 +6,10 @@ import com.restaurant.restaurant_management.model.Billing;
 import com.restaurant.restaurant_management.model.Order;
 import com.restaurant.restaurant_management.repository.BillingRepository;
 import com.restaurant.restaurant_management.repository.OrderRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import jakarta.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -37,7 +37,7 @@ public class BillingServiceImpl implements BillingService {
     @Transactional
     public BillingResponseDTO createBilling(Long orderId, double taxPercent, double discountPercent) {
         Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new ResourceNotFoundException("Order not found with id: " + orderId));
+            .orElseThrow(() -> new ResourceNotFoundException("Order not found with id: " + orderId));
 
         double price = order.getTotalAmount();
         double tax = price * taxPercent / 100;
@@ -81,8 +81,8 @@ public class BillingServiceImpl implements BillingService {
         List<Billing> bills = billingRepository.findByUserAndDateRange(user, start, end);
 
         return bills.stream()
-                .map(this::mapToDTO)
-                .collect(Collectors.toList());
+            .map(this::mapToDTO)
+            .collect(Collectors.toList());
     }
 
 }

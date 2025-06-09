@@ -26,7 +26,7 @@ public class MenuItemServiceImpl implements MenuItemService {
     @Override
     public MenuItemResponseDTO createMenuItem(MenuItemRequestDTO dto) {
         Category category = categoryRepository.findById(dto.getCategoryId())
-                .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + dto.getCategoryId()));
+            .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + dto.getCategoryId()));
 
         MenuItem menuItem = new MenuItem();
         menuItem.setName(dto.getName());
@@ -44,31 +44,31 @@ public class MenuItemServiceImpl implements MenuItemService {
 
         if (categoryId != null) {
             Category category = categoryRepository.findById(categoryId)
-                    .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + categoryId));
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + categoryId));
             items = menuItemRepository.findByCategory(category);
         } else {
             items = menuItemRepository.findAll();
         }
 
         return items.stream()
-                .map(this::mapToResponse)
-                .collect(Collectors.toList());
+            .map(this::mapToResponse)
+            .collect(Collectors.toList());
     }
 
     @Override
     public MenuItemResponseDTO getMenuItemById(Long id) {
         MenuItem menuItem = menuItemRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("MenuItem not found with id: " + id));
+            .orElseThrow(() -> new ResourceNotFoundException("MenuItem not found with id: " + id));
         return mapToResponse(menuItem);
     }
 
     @Override
     public MenuItemResponseDTO updateMenuItem(Long id, MenuItemRequestDTO dto) {
         MenuItem menuItem = menuItemRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("MenuItem not found with id: " + id));
+            .orElseThrow(() -> new ResourceNotFoundException("MenuItem not found with id: " + id));
 
         Category category = categoryRepository.findById(dto.getCategoryId())
-                .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + dto.getCategoryId()));
+            .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + dto.getCategoryId()));
 
         menuItem.setName(dto.getName());
         menuItem.setDescription(dto.getDescription());
@@ -82,18 +82,18 @@ public class MenuItemServiceImpl implements MenuItemService {
     @Override
     public void deleteMenuItem(Long id) {
         MenuItem menuItem = menuItemRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("MenuItem not found with id: " + id));
+            .orElseThrow(() -> new ResourceNotFoundException("MenuItem not found with id: " + id));
         menuItemRepository.delete(menuItem);
     }
 
     private MenuItemResponseDTO mapToResponse(MenuItem menuItem) {
         return new MenuItemResponseDTO(
-                menuItem.getId(),
-                menuItem.getName(),
-                menuItem.getDescription(),
-                menuItem.getPrice(),
-                menuItem.getCategory().getId(),
-                menuItem.getCategory().getName()
+            menuItem.getId(),
+            menuItem.getName(),
+            menuItem.getDescription(),
+            menuItem.getPrice(),
+            menuItem.getCategory().getId(),
+            menuItem.getCategory().getName()
         );
     }
 }
