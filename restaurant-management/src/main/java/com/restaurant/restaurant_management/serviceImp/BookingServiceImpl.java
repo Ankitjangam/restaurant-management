@@ -27,10 +27,10 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public BookingResponseDTO createBooking(BookingRequestDTO dto, String username) {
         RestaurantTable table = tableRepository.findById(dto.getTableId())
-                .orElseThrow(() -> new ResourceNotFoundException("Table not found with id: " + dto.getTableId()));
+            .orElseThrow(() -> new ResourceNotFoundException("Table not found with id: " + dto.getTableId()));
 
-        User user = (User) userRepository.findByEmail(username)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + username));
+        User user = userRepository.findByEmail(username)
+            .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + username));
 
         Booking booking = new Booking();
         booking.setTable(table);  // no casting needed
@@ -57,8 +57,8 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public List<BookingResponseDTO> getBookingsByUsername(String username) {
-        User user = (User) userRepository.findByEmail(username)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + username));
+        User user = userRepository.findByEmail(username)
+            .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + username));
         List<Booking> bookings = bookingRepository.findByUser(user);
         return bookings.stream().map(this::mapToDTO).collect(Collectors.toList());
     }
@@ -66,7 +66,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public void cancelBooking(Long bookingId) {
         Booking booking = bookingRepository.findById(bookingId)
-                .orElseThrow(() -> new ResourceNotFoundException("Booking not found with id: " + bookingId));
+            .orElseThrow(() -> new ResourceNotFoundException("Booking not found with id: " + bookingId));
         booking.setStatus(BookingStatus.CANCELLED);
         bookingRepository.save(booking);
     }
@@ -74,19 +74,19 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public BookingResponseDTO getBookingById(Long bookingId) {
         Booking booking = bookingRepository.findById(bookingId)
-                .orElseThrow(() -> new ResourceNotFoundException("Booking not found with id: " + bookingId));
+            .orElseThrow(() -> new ResourceNotFoundException("Booking not found with id: " + bookingId));
         return mapToDTO(booking);
     }
 
     private BookingResponseDTO mapToDTO(Booking booking) {
         return BookingResponseDTO.builder()
-                .id(booking.getId())
-                .userId(booking.getUser().getId())
-                .tableId(booking.getTable().getId()) // ADD THIS
-                .startTime(booking.getStartTime())
-                .endTime(booking.getEndTime())
-                .status(booking.getStatus())
-                .build();
+            .id(booking.getId())
+            .userId(booking.getUser().getId())
+            .tableId(booking.getTable().getId()) // ADD THIS
+            .startTime(booking.getStartTime())
+            .endTime(booking.getEndTime())
+            .status(booking.getStatus())
+            .build();
     }
 
 }

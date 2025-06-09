@@ -7,8 +7,6 @@ import com.restaurant.restaurant_management.repository.RestaurantTableRepository
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
 @RequiredArgsConstructor
 public class RestaurantTableServiceImpl implements RestaurantTableService {
@@ -18,10 +16,10 @@ public class RestaurantTableServiceImpl implements RestaurantTableService {
     @Override
     public RestaurantTable createTable(TableRequestDTO dto) {
         RestaurantTable table = RestaurantTable.builder()
-                .tableNumber(dto.getTableNumber())  // keep it as String
-                .capacity(dto.getCapacity())
-                .available(true)
-                .build();
+            .tableNumber(dto.getTableNumber())  // keep it as String
+            .capacity(dto.getCapacity())
+            .available(true)
+            .build();
         return tableRepository.save(table);
     }
 
@@ -29,14 +27,14 @@ public class RestaurantTableServiceImpl implements RestaurantTableService {
     @Override
     public RestaurantTableDto getTable(Long id) {
         RestaurantTable table = tableRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Table not found"));
+            .orElseThrow(() -> new RuntimeException("Table not found"));
         return convertToDto(table);
     }
 
     @Override
     public RestaurantTableDto updateTable(Long id, RestaurantTableDto dto) {
         RestaurantTable table = tableRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Table not found"));
+            .orElseThrow(() -> new RuntimeException("Table not found"));
 
         table.setTableNumber(String.valueOf(dto.getTableNumber()));
         table.setCapacity(dto.getCapacity());
@@ -49,7 +47,7 @@ public class RestaurantTableServiceImpl implements RestaurantTableService {
     @Override
     public void deleteTable(Long id) {
         RestaurantTable table = tableRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Table not found"));
+            .orElseThrow(() -> new RuntimeException("Table not found"));
         tableRepository.delete(table);
     }
 

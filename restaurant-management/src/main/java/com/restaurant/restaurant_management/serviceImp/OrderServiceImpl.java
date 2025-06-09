@@ -3,7 +3,10 @@ package com.restaurant.restaurant_management.service;
 import com.restaurant.restaurant_management.dto.OrderResponse;
 import com.restaurant.restaurant_management.dto.PlaceOrderRequest;
 import com.restaurant.restaurant_management.model.*;
-import com.restaurant.restaurant_management.repository.*;
+import com.restaurant.restaurant_management.repository.InventoryRepository;
+import com.restaurant.restaurant_management.repository.MenuItemRepository;
+import com.restaurant.restaurant_management.repository.OrderRepository;
+import com.restaurant.restaurant_management.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -37,11 +40,11 @@ public class OrderServiceImpl implements OrderService {
 
         List<OrderItem> orderItems = request.getItems().stream().map(itemDTO -> {
             MenuItem menuItem = menuItemRepository.findById(itemDTO.getMenuItemId())
-                    .orElseThrow(() -> new RuntimeException("Menu item not found"));
+                .orElseThrow(() -> new RuntimeException("Menu item not found"));
 
             // Deduct inventory
             Inventory inventory = inventoryRepository.findByItemName(menuItem.getName())
-                    .orElseThrow(() -> new RuntimeException("Inventory not found for item: " + menuItem.getName()));
+                .orElseThrow(() -> new RuntimeException("Inventory not found for item: " + menuItem.getName()));
 
             if (inventory.getQuantity() < itemDTO.getQuantity()) {
                 throw new RuntimeException("Insufficient inventory for item: " + menuItem.getName());
@@ -68,7 +71,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderResponse getOrderById(Long orderId) {
         Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new RuntimeException("Order not found"));
+            .orElseThrow(() -> new RuntimeException("Order not found"));
         return toResponse(order);
     }
 
@@ -86,14 +89,14 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<OrderResponse> getOrdersForCustomer(String username) {
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+            .orElseThrow(() -> new RuntimeException("User not found"));
         return orderRepository.findByUser(user).stream().map(this::toResponse).collect(Collectors.toList());
     }
 
     @Override
     public void updateOrderStatus(Long orderId, String status) {
         Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new RuntimeException("Order not found"));
+            .orElseThrow(() -> new RuntimeException("Order not found"));
         order.setStatus(OrderStatus.valueOf(status.toUpperCase()));
         orderRepository.save(order);
     }
@@ -102,7 +105,7 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public void cancelOrder(Long orderId, String username) {
         Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new RuntimeException("Order not found"));
+            .orElseThrow(() -> new RuntimeException("Order not found"));
 
         if (!order.getUser().getUsername().equals(username)) {
             throw new RuntimeException("Unauthorized to cancel this order");
@@ -139,8 +142,8 @@ public class OrderServiceImpl implements OrderService {
         List<Order> filteredOrders = orderRepository.filterOrders(user, orderStatus, startDateTime, endDateTime);
 
         return filteredOrders.stream()
-                .map(this::toResponse)
-                .collect(Collectors.toList());
+            .map(this::toResponse)
+            .collect(Collectors.toList());
     }
 
     @Override
