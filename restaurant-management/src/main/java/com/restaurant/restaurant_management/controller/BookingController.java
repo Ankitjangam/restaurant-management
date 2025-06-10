@@ -10,22 +10,35 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 import java.util.List;
 
+/**
+ * REST controller for managing restaurant table bookings.
+ */
 @RestController
-@RequestMapping("/api/bookings")
+@RequestMapping("/bookings")
 @RequiredArgsConstructor
 public class BookingController {
 
-
     private final BookingService bookingService;
 
-    // ✅ Create a new booking (CUSTOMER)
+    /**
+     * Create a new booking for the authenticated user.
+     *
+     * @param dto       booking request data
+     * @param principal currently authenticated user
+     * @return created BookingResponseDTO
+     */
     @PostMapping
     public ResponseEntity<BookingResponseDTO> createBooking(@RequestBody BookingRequestDTO dto, Principal principal) {
         BookingResponseDTO booking = bookingService.createBooking(dto, principal.getName());
         return ResponseEntity.ok(booking);
     }
 
-    // ✅ Get all bookings (ADMIN, STAFF)
+    /**
+     * Retrieve all bookings, optionally filtered by tableId.
+     *
+     * @param tableId optional table ID filter
+     * @return list of BookingResponseDTO
+     */
     @GetMapping
     public ResponseEntity<List<BookingResponseDTO>> getAllBookings(
             @RequestParam(required = false) Long tableId
@@ -34,21 +47,36 @@ public class BookingController {
         return ResponseEntity.ok(bookings);
     }
 
-    // ✅ Get bookings for current logged-in customer
+    /**
+     * Retrieve all bookings for the currently authenticated user.
+     *
+     * @param principal currently authenticated user
+     * @return list of BookingResponseDTO
+     */
     @GetMapping("/my")
     public ResponseEntity<List<BookingResponseDTO>> getMyBookings(Principal principal) {
         List<BookingResponseDTO> bookings = bookingService.getBookingsByUsername(principal.getName());
         return ResponseEntity.ok(bookings);
     }
 
-    // ✅ Admin can cancel a booking
+    /**
+     * Cancel a booking by its ID.
+     *
+     * @param bookingId booking ID to cancel
+     * @return success message
+     */
     @DeleteMapping("/{bookingId}")
     public ResponseEntity<String> cancelBooking(@PathVariable Long bookingId) {
         bookingService.cancelBooking(bookingId);
         return ResponseEntity.ok("Booking cancelled successfully.");
     }
 
-    // ✅ (Optional) Get booking by ID
+    /**
+     * Get booking details by booking ID.
+     *
+     * @param bookingId booking ID
+     * @return BookingResponseDTO
+     */
     @GetMapping("/{bookingId}")
     public ResponseEntity<BookingResponseDTO> getBookingById(@PathVariable Long bookingId) {
         BookingResponseDTO dto = bookingService.getBookingById(bookingId);

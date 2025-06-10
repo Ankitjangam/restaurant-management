@@ -7,7 +7,18 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
+/**
+ * Repository interface for managing {@link Role} entities.
+ * Provides CRUD operations and custom query to find roles by name.
+ */
 @Repository
 public interface RoleRepository extends JpaRepository<Role, Long> {
-     Optional<Role> findByName(RoleType name);
+
+    /**
+     * Find a role by its name (e.g., ROLE_ADMIN, ROLE_CUSTOMER).
+     *
+     * @param name The name of the role.
+     * @return Optional containing the Role if found, empty otherwise.
+     */
+    Optional<Role> findByName(RoleType name);
 }
