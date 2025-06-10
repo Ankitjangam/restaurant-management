@@ -18,7 +18,7 @@ import java.util.List;
  * including optional filtering by Category ID.
  */
 @RestController
-@RequestMapping("/api/menu-items")
+@RequestMapping("/menu-items")
 public class MenuItemController {
 
     private static final Logger logger = LoggerFactory.getLogger(MenuItemController.class);
@@ -31,6 +31,7 @@ public class MenuItemController {
 
     /**
      * Create a new Menu Item.
+     *
      * @param dto the MenuItemRequestDTO with input data (validated).
      * @return ResponseEntity with created MenuItemResponseDTO and HTTP 201 status.
      */
@@ -43,6 +44,7 @@ public class MenuItemController {
 
     /**
      * Get all Menu Items, optionally filtered by categoryId.
+     *
      * @param categoryId optional Category ID for filtering menu items.
      * @return list of MenuItemResponseDTO.
      */
@@ -55,6 +57,7 @@ public class MenuItemController {
 
     /**
      * Get Menu Item by its ID.
+     *
      * @param id Menu Item ID.
      * @return MenuItemResponseDTO.
      */
@@ -67,7 +70,8 @@ public class MenuItemController {
 
     /**
      * Update an existing Menu Item by ID.
-     * @param id Menu Item ID.
+     *
+     * @param id  Menu Item ID.
      * @param dto the updated data.
      * @return updated MenuItemResponseDTO.
      */
@@ -80,6 +84,7 @@ public class MenuItemController {
 
     /**
      * Delete a Menu Item by ID.
+     *
      * @param id Menu Item ID.
      * @return HTTP 204 No Content on successful deletion.
      */
