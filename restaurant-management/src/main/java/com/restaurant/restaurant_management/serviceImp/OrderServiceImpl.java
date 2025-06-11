@@ -2,6 +2,7 @@ package com.restaurant.restaurant_management.serviceImp;
 
 import com.restaurant.restaurant_management.dto.OrderResponse;
 import com.restaurant.restaurant_management.dto.PlaceOrderRequest;
+import com.restaurant.restaurant_management.enums.OrderStatus;
 import com.restaurant.restaurant_management.exception.InvalidRequestException;
 import com.restaurant.restaurant_management.exception.ResourceNotFoundException;
 import com.restaurant.restaurant_management.exception.UnauthorizedActionException;
@@ -42,7 +43,7 @@ public class OrderServiceImpl implements OrderService {
     public Order placeOrder(PlaceOrderRequest request) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByEmail(email)
-            .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + email));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + email));
 
         Order order = new Order();
         order.setOrderDate(LocalDateTime.now());
@@ -51,12 +52,12 @@ public class OrderServiceImpl implements OrderService {
 
         // FIXED here: use itemDTO variable, NOT the class name
         List<OrderItem> orderItems = request.getItems().stream()
-            .map(itemDTO -> createOrderItemWithInventoryCheck(itemDTO, order))
-            .collect(Collectors.toList());
+                .map(itemDTO -> createOrderItemWithInventoryCheck(itemDTO, order))
+                .collect(Collectors.toList());
 
         double totalAmount = orderItems.stream()
-            .mapToDouble(i -> i.getQuantity() * i.getPrice())
-            .sum();
+                .mapToDouble(i -> i.getQuantity() * i.getPrice())
+                .sum();
         order.setTotalAmount(totalAmount);
         order.setOrderItems(orderItems);
 
@@ -65,10 +66,10 @@ public class OrderServiceImpl implements OrderService {
 
     private OrderItem createOrderItemWithInventoryCheck(PlaceOrderRequest.OrderItemDTO itemDTO, Order order) {
         MenuItem menuItem = menuItemRepository.findById(itemDTO.getMenuItemId())
-            .orElseThrow(() -> new ResourceNotFoundException("Menu item not found with id: " + itemDTO.getMenuItemId()));
+                .orElseThrow(() -> new ResourceNotFoundException("Menu item not found with id: " + itemDTO.getMenuItemId()));
 
         Inventory inventory = inventoryRepository.findByItemName(menuItem.getName())
-            .orElseThrow(() -> new ResourceNotFoundException("Inventory not found for item: " + menuItem.getName()));
+                .orElseThrow(() -> new ResourceNotFoundException("Inventory not found for item: " + menuItem.getName()));
 
         if (inventory.getQuantity() < itemDTO.getQuantity()) {
             throw new InvalidRequestException("Insufficient inventory for item: " + menuItem.getName());
@@ -88,38 +89,38 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderResponse getOrderById(Long orderId) {
         Order order = orderRepository.findById(orderId)
-            .orElseThrow(() -> new ResourceNotFoundException("Order not found with id: " + orderId));
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found with id: " + orderId));
         return toResponse(order);
     }
 
     @Override
     public List<OrderResponse> getAllOrders() {
         return orderRepository.findAll().stream()
-            .map(this::toResponse)
-            .collect(Collectors.toList());
+                .map(this::toResponse)
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<OrderResponse> getOrdersByStatus(String status) {
         OrderStatus orderStatus = parseOrderStatus(status);
         return orderRepository.findByStatus(orderStatus).stream()
-            .map(this::toResponse)
-            .collect(Collectors.toList());
+                .map(this::toResponse)
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<OrderResponse> getOrdersForCustomer(String username) {
         User user = userRepository.findByUsername(username)
-            .orElseThrow(() -> new ResourceNotFoundException("User not found with username: " + username));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with username: " + username));
         return orderRepository.findByUser(user).stream()
-            .map(this::toResponse)
-            .collect(Collectors.toList());
+                .map(this::toResponse)
+                .collect(Collectors.toList());
     }
 
     @Override
     public void updateOrderStatus(Long orderId, String status) {
         Order order = orderRepository.findById(orderId)
-            .orElseThrow(() -> new ResourceNotFoundException("Order not found with id: " + orderId));
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found with id: " + orderId));
         order.setStatus(parseOrderStatus(status));
         orderRepository.save(order);
     }
@@ -128,7 +129,7 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public void cancelOrder(Long orderId, String username) {
         Order order = orderRepository.findById(orderId)
-            .orElseThrow(() -> new ResourceNotFoundException("Order not found with id: " + orderId));
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found with id: " + orderId));
 
         if (!order.getUser().getUsername().equals(username)) {
             throw new UnauthorizedActionException("Unauthorized to cancel this order");
@@ -160,8 +161,8 @@ public class OrderServiceImpl implements OrderService {
         List<Order> filteredOrders = orderRepository.filterOrders(user, orderStatus, startDateTime, endDateTime);
 
         return filteredOrders.stream()
-            .map(this::toResponse)
-            .collect(Collectors.toList());
+                .map(this::toResponse)
+                .collect(Collectors.toList());
     }
 
     @Override

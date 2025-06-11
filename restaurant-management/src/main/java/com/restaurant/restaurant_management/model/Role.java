@@ -1,5 +1,6 @@
 package com.restaurant.restaurant_management.model;
 
+import com.restaurant.restaurant_management.enums.RoleType;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -23,6 +24,6 @@ public class Role {
     /**
      * Role name stored as a String in the database.
      */
-    @Enumerated(EnumType.STRING)  // Maps the enum RoleType as a String value in DB
+    @Enumerated(EnumType.STRING)
     private RoleType name;
 }

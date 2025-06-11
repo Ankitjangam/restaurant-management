@@ -1,7 +1,7 @@
 package com.restaurant.restaurant_management.repository;
 
+import com.restaurant.restaurant_management.enums.RoleType;
 import com.restaurant.restaurant_management.model.Role;
-import com.restaurant.restaurant_management.model.RoleType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,5 +1,6 @@
 package com.restaurant.restaurant_management.exception;
 
+import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -87,7 +88,7 @@ public class GlobalExceptionHandler {
         logger.error("Internal server error: ", ex);
 
         ErrorResponse errorResponse = new ErrorResponse(
-            "An unexpected error occurred. Please try again later."
+                "An unexpected error occurred. Please try again later."
         );
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
     }
@@ -95,11 +96,12 @@ public class GlobalExceptionHandler {
     /**
      * Standard error response body for API errors.
      */
+    @Getter
     public static class ErrorResponse {
 
-        private String message;
+        private final String message;
         private Map<String, String> fieldErrors;
-        private long timestamp;
+        private final long timestamp;
 
         public ErrorResponse(String message) {
             this.message = message;
@@ -112,17 +114,6 @@ public class GlobalExceptionHandler {
             this.timestamp = System.currentTimeMillis();
         }
 
-        public String getMessage() {
-            return message;
-        }
-
-        public Map<String, String> getFieldErrors() {
-            return fieldErrors;
-        }
-
-        public long getTimestamp() {
-            return timestamp;
-        }
     }
 }
 

@@ -1,6 +1,6 @@
 package com.restaurant.restaurant_management.dto;
 
-import com.restaurant.restaurant_management.model.BookingStatus;
+import com.restaurant.restaurant_management.enums.BookingStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
