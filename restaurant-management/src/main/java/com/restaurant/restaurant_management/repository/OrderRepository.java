@@ -1,7 +1,7 @@
 package com.restaurant.restaurant_management.repository;
 
+import com.restaurant.restaurant_management.enums.OrderStatus;
 import com.restaurant.restaurant_management.model.Order;
-import com.restaurant.restaurant_management.model.OrderStatus;
 import com.restaurant.restaurant_management.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -46,50 +46,50 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
      * @return list of filtered orders
      */
     @Query("SELECT o FROM Order o " +
-        "WHERE (:user IS NULL OR o.user = :user) " +
-        "AND (:status IS NULL OR o.status = :status) " +
-        "AND (:startDate IS NULL OR o.orderDate >= :startDate) " +
-        "AND (:endDate IS NULL OR o.orderDate <= :endDate)")
+            "WHERE (:user IS NULL OR o.user = :user) " +
+            "AND (:status IS NULL OR o.status = :status) " +
+            "AND (:startDate IS NULL OR o.orderDate >= :startDate) " +
+            "AND (:endDate IS NULL OR o.orderDate <= :endDate)")
     List<Order> filterOrders(
-        @Param("user") User user,
-        @Param("status") OrderStatus status,
-        @Param("startDate") LocalDateTime startDate,
-        @Param("endDate") LocalDateTime endDate
+            @Param("user") User user,
+            @Param("status") OrderStatus status,
+            @Param("startDate") LocalDateTime startDate,
+            @Param("endDate") LocalDateTime endDate
     );
 
     /**
      * Find orders by username, status, and within a specific date range.
      */
     List<Order> findByUserUsernameAndStatusAndOrderDateBetween(
-        String username,
-        OrderStatus status,
-        LocalDateTime start,
-        LocalDateTime end
+            String username,
+            OrderStatus status,
+            LocalDateTime start,
+            LocalDateTime end
     );
 
     /**
      * Find orders by username within a specific date range.
      */
     List<Order> findByUserUsernameAndOrderDateBetween(
-        String username,
-        LocalDateTime start,
-        LocalDateTime end
+            String username,
+            LocalDateTime start,
+            LocalDateTime end
     );
 
     /**
      * Find orders by status within a date range.
      */
     List<Order> findByStatusAndOrderDateBetween(
-        OrderStatus status,
-        LocalDateTime start,
-        LocalDateTime end
+            OrderStatus status,
+            LocalDateTime start,
+            LocalDateTime end
     );
 
     /**
      * Find all orders placed between two given timestamps.
      */
     List<Order> findByOrderDateBetween(
-        LocalDateTime start,
-        LocalDateTime end
+            LocalDateTime start,
+            LocalDateTime end
     );
 }

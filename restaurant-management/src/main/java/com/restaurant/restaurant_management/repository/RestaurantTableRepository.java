@@ -12,5 +12,4 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface RestaurantTableRepository extends JpaRepository<RestaurantTable, Long> {
 
-    // Additional custom methods like findByAvailableTrue() can be added for specific use cases
 }

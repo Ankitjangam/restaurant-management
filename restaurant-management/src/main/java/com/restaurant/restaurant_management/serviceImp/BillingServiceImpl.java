@@ -58,7 +58,7 @@ public class BillingServiceImpl implements BillingService {
     public BillingResponseDTO createBilling(Long orderId, double taxPercent, double discountPercent) {
         // Retrieve order by ID or throw exception if not found
         Order order = orderRepository.findById(orderId)
-            .orElseThrow(() -> new ResourceNotFoundException("Order not found with id: " + orderId));
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found with id: " + orderId));
 
         // Calculate price components based on order's total amount
         double price = order.getTotalAmount();
@@ -91,8 +91,9 @@ public class BillingServiceImpl implements BillingService {
     public BillingResponseDTO getBillingByOrderId(Long orderId) {
         Billing billing = billingRepository.findByOrderId(orderId);
         if (billing == null) {
-            return null;
+            throw new ResourceNotFoundException("Billing not found for order ID: " + orderId);
         }
+
         return mapToDTO(billing);
     }
 
@@ -127,7 +128,7 @@ public class BillingServiceImpl implements BillingService {
 
         // Map Billing entities to DTOs and return as list
         return bills.stream()
-            .map(this::mapToDTO)
-            .collect(Collectors.toList());
+                .map(this::mapToDTO)
+                .collect(Collectors.toList());
     }
 }

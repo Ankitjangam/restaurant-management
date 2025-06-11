@@ -39,7 +39,9 @@ public class SecurityConfig {
                 // Define authorization rules for endpoints
                 .authorizeHttpRequests(auth -> auth
                         // Public access: Authentication endpoints
-                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+                        .requestMatchers("/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html").permitAll()
                         .requestMatchers("/auth/**").permitAll()
 
                         // Role-based access control
@@ -106,8 +108,6 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, "/categories/**")
                         .hasAnyAuthority("ROLE_ADMIN", "ROLE_STAFF")
 
-                        // Reports - admin only
-                        .requestMatchers("/reports/**").hasAuthority("ROLE_ADMIN")
 
                         // All other requests require authentication
                         .anyRequest().authenticated()

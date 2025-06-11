@@ -1,7 +1,7 @@
 package com.restaurant.restaurant_management.repository;
 
+import com.restaurant.restaurant_management.enums.BookingStatus;
 import com.restaurant.restaurant_management.model.Booking;
-import com.restaurant.restaurant_management.model.BookingStatus;
 import com.restaurant.restaurant_management.model.RestaurantTable;
 import com.restaurant.restaurant_management.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -31,7 +31,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
      * @return list of conflicting bookings
      */
     List<Booking> findByTableAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(
-        RestaurantTable table, LocalDateTime endTime, LocalDateTime startTime
+            RestaurantTable table, LocalDateTime endTime, LocalDateTime startTime
     );
 
     /**

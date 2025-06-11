@@ -1,5 +1,6 @@
 package com.restaurant.restaurant_management.model;
 
+import com.restaurant.restaurant_management.enums.OrderStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,4 +1,4 @@
-package com.restaurant.restaurant_management.model;
+package com.restaurant.restaurant_management.enums;
 
 /**
  * Enum representing the different statuses a booking or order can have

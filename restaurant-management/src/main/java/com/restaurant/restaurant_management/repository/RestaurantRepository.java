@@ -11,6 +11,4 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
 
-    // You can extend this interface by adding custom queries if needed,
-    // such as finding by restaurant name, city, or filtering by availability.
 }
